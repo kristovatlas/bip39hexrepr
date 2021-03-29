@@ -73,33 +73,6 @@ def phrase_to_hex(phrase):
 
     return output
 
-def phrase_to_hex2(phrase):
-    """Convert BIP39 english word phrase to hex represenation
-
-    This is a v2 that first converts integer value  in [0, 2047] to binary and
-    then to hex, saving a small amount of space. This condensed a sample 24-word
-    passphrase to 64 hex characters instead of the 72 characters of the original
-    version of this function. However, since it is a less intuitive way of
-    representing the hex phrase should someone in the future need to reverse
-    engineer how the conversion worked, and since the space savings are small, I
-    leave it as dead code for now.
-    """
-    wordlist_val_map = load_wordlist_val_map()
-    words = phrase.split(' ')
-    binstring = ''
-
-    for word in words:
-        int_val = wordlist_val_map[word]
-        binstring += "{0:b}".format(int_val)
-
-    hex_str = hex(int(binstring, 2))[2:]
-
-    #SatoshiLabs shamir requires input of even number of bytes as "master-secret"
-    missing_padding = len(hex_str) % 4
-    #arbitrarily left pad with zeroes
-    hex_str = "0" * missing_padding + hex_str
-    return hex_str
-
 def _main(argv):
     print(argv[1])
     print("=>")
@@ -112,9 +85,6 @@ def _main(argv):
     except ValueError:
         output = phrase_to_hex(argv[1])
         print(output)
-
-        #output2 = phrase_to_hex2(argv[1])
-        #print(output2)
 
 if __name__ == '__main__':
     _main(sys.argv)
